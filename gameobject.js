@@ -1,4 +1,4 @@
-let Vector = require("./vector.js");
+import Vector from "./vector.js";
 
 // Started as the particle class first defined in episode 8
 const _items = [];
@@ -159,13 +159,13 @@ class Actor extends GameObject
         this.active = true;
         this.bounce = -1;
         this.friction = 1;
-        this.colour = colour
+        this.colour = colour;
         if(colour == null) this.colour = "#000";
     }
 
     accelerate(acceleration)
     {
-        if(acceleration.constructor.name != Vector.name)
+        if(acceleration.constructor.name != name)
         {
             throw "Argument for particle.accelerate() needs to derive from vector."
         }
@@ -200,6 +200,4 @@ class Particle extends Actor
     }
 }
 
-if (typeof module !== "undefined") {
-    module.exports = { ActorObjects, GameObject, Actor, Particle };
-}
+export { ActorObjects, GameObject, Actor, Particle };

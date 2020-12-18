@@ -1,7 +1,7 @@
-const { default: queryType } = require("./quadtree");
+import { queryType } from "./quadtree";
 
-let {Particle, ActorObjects } = require("./gameobject.js");
-let QuadTree = require("./quadtree.js");
+import { Particle, ActorObjects } from "./gameobject.js";
+import QuadTree from "./quadtree.js";
 
 var canvas,
 context,

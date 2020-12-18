@@ -10,6 +10,5 @@ class Utils
         return value >= min && value <= max;
     }
 }
-if (typeof module !== "undefined") {
-    module.exports = { Utils };
-} 
+
+export { Utils };

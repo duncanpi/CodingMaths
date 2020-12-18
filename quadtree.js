@@ -1,13 +1,11 @@
-const { default: ActorObjects } = require("./gameobject.js");
-
-let GameObject = require("./gameobject.js");
-let RectangleHB = require("./hitbox.js");
+import {ActorObjects, GameObject} from "./gameobject.js";
+import RectangleHB from "./hitbox.js";
 
 const queryType = 
 {
     id: 0,
     area : 1
-}
+};
 
 class Query 
 {
@@ -179,6 +177,6 @@ class Quadtree
             this.children = [];
         }
     }
-};
+}
 
-export {queryType, Query, QuadTree};
+export {queryType, Query, Quadtree};

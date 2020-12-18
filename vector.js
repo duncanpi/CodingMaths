@@ -111,8 +111,6 @@ class Vector
         this._x /= scalar;
         this._y /= scalar;
     }
-};
-
-if (typeof module !== "undefined") {
-    module.exports = { Vector };
 }
+
+export {Vector};

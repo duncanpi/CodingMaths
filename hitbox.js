@@ -5,7 +5,7 @@ const shape =
     circle: 2,
     rectangle: 4,
     triangle: 8
-}
+};
 
 Object.freeze(shape);
 
@@ -33,9 +33,7 @@ class CircleHB extends HitBox
     constructor(radius)
     {
         super(shape.circle);
-        this.radius = radius
+        this.radius = radius;
     }
 }
-if (typeof module !== "undefined") {
-    module.exports = {shape, HitBox, RectangleHB, CircleHB};
-}
+export{shape, HitBox, RectangleHB, CircleHB};

@@ -1,4 +1,4 @@
-let Utils = require("./utils.js");
+import { Utils } from "./utils.js";
 
 class Collision
 {
@@ -19,7 +19,7 @@ class Collision
             recty1 = rectangle.position.y + rectangle.hitBox.height;
         
         return Utils.inRange(point.position.x, rectangle.position.x, rectx1) &&
-            Utils.inRange(point.position.y, rectangle.position.y, recty1);
+        Utils.inRange(point.position.y, rectangle.position.y, recty1);
     }
 
     pointTriangleCollision(point, triangle)
@@ -103,6 +103,4 @@ class Collision
     }
 }
 
-if (typeof module !== "undefined") {
-    module.exports = { Collision };
-}
+export { Collision };
