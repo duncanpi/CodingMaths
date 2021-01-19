@@ -1,8 +1,3 @@
-import { queryType } from "./quadtree";
-
-import { Particle, ActorObjects } from "./gameobject.js";
-import QuadTree from "./quadtree.js";
-
 var canvas,
 context,
 width,

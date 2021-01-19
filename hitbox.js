@@ -36,4 +36,3 @@ class CircleHB extends HitBox
         this.radius = radius;
     }
 }
-export{shape, HitBox, RectangleHB, CircleHB};

@@ -10,5 +10,3 @@ class Utils
         return value >= min && value <= max;
     }
 }
-
-export { Utils };

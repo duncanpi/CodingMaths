@@ -1,5 +1,3 @@
-import { Utils } from "./utils.js";
-
 class Collision
 {
     pointPointCollision(point1, point2)
@@ -102,5 +100,3 @@ class Collision
         throw "Not triangleTriangleCollision implemented";
     }
 }
-
-export { Collision };

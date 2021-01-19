@@ -1,6 +1,3 @@
-import {ActorObjects, GameObject} from "./gameobject.js";
-import RectangleHB from "./hitbox.js";
-
 const queryType = 
 {
     id: 0,
@@ -178,5 +175,3 @@ class Quadtree
         }
     }
 }
-
-export {queryType, Query, Quadtree};

@@ -1,5 +1,3 @@
-import Vector from "./vector.js";
-
 // Started as the particle class first defined in episode 8
 const _items = [];
 const ActorObjects = 
@@ -199,5 +197,3 @@ class Particle extends Actor
         super(x, y, speed, direction, grav, new CircleHB(radius));
     }
 }
-
-export { ActorObjects, GameObject, Actor, Particle };
