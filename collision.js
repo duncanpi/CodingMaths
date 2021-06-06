@@ -1,17 +1,16 @@
-import { Utils } from "./utils.js";
 
-class Collision
+collision =
 {
     pointPointCollision(point1, point2)
     {
         return point1.position.x == point2.position.x &&
             point1.position.y == point2.position.y;
-    }
+    },
 
     pointCircleCollision(point, circle)
     {
         return point.distanceTo(circle) <= circle.radius;
-    }
+    },
 
     pointRectangleCollision(point, rectangle)
     {
@@ -20,12 +19,12 @@ class Collision
         
         return Utils.inRange(point.position.x, rectangle.position.x, rectx1) &&
         Utils.inRange(point.position.y, rectangle.position.y, recty1);
-    }
+    },
 
     pointTriangleCollision(point, triangle)
     {
         throw "Not pointTriangleCollision implemented";
-    }
+    },
 
     circleCircleCollision(circle1, circle2)
     {
@@ -36,7 +35,7 @@ class Collision
             return true;
         }
         return false;
-    }
+    },
 
     circleRectangleCollision(circle, rectangle)
     {
@@ -47,7 +46,7 @@ class Collision
         let yDist = Math.abs(rectCentreY - circle.position.y);
     
         // radius of the circle
-        let r = circle.hitBox.r;
+        let r = circle.hitBox.radius;
     
         let w = rectangle.hitBox.width;
         let h = rectangle.hitBox.height;
@@ -56,20 +55,26 @@ class Collision
     
         // no intersection
         if (xDist > (r + w) || yDist > (r + h))
-          return false;
+        {
+            return false;
+        }
+
     
         // intersection within the circle
         if (xDist <= w || yDist <= h)
-          return true;
+        {
+            return true;
+        }
+        
     
         // intersection on the edge of the circle
         return edges <= circle.hitBox.radius;
-    }
+    },
 
     circleTriangleCollision(circle, triangle)
     {
         throw "Not circleTriangleCollision implemented";
-    }
+    },
 
     rectangleRectangleCollision(rectangle1, rectangle2)
     {
@@ -90,17 +95,15 @@ class Collision
                 return true;
         }
         return false;
-    }
+    },
 
     rectangleTriangleCollision(rectangle, triangle)
     {
         throw "Not rectangleTriangleCollision implemented";
-    }
+    },
     // t x t
     triangleTriangleCollision(triangle1, triangle2)
     {
         throw "Not triangleTriangleCollision implemented";
     }
-}
-
-export { Collision };
+};

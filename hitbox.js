@@ -15,6 +15,18 @@ class HitBox
     {
         this.shape = shape;
     }
+
+    get shapeName()
+    {
+        for(var i in shape)
+        {
+            if(shape[i] ==this.shape)
+            {
+                return i;
+            }
+        }
+        throw("Shape constant doesnt not contain a property equal to " + this.shape);
+    }
 }
 
 class RectangleHB extends HitBox
@@ -36,4 +48,4 @@ class CircleHB extends HitBox
         this.radius = radius;
     }
 }
-export{shape, HitBox, RectangleHB, CircleHB};
+

@@ -1,6 +1,3 @@
-import {ActorObjects, GameObject} from "./gameobject.js";
-import RectangleHB from "./hitbox.js";
-
 const queryType = 
 {
     id: 0,
@@ -17,7 +14,7 @@ class Query
     }
 }
 
-class Quadtree 
+class QuadTree 
 {
     constructor(x, y, width, height, capacity)
     {
@@ -31,32 +28,33 @@ class Quadtree
 
     subdivide() 
     {
+        if(this.divided)
+            return;
+
         let x = this.boundary.position.x;
         let y = this.boundary.position.y;
-        let w = this.boundary.hitBox.w / 2;
-        let h = this.boundary.hitBox.h / 2;
+        let w = this.boundary.hitBox.width / 2;
+        let h = this.boundary.hitBox.height / 2;
     
-        let ne = new GameObject(x, y, new RectangleHB(w, h));
-        this.children.push(new QuadTree(ne, this.capacity));
-
-        let nw = new GameObject(x + w, y, new RectangleHB(w, h));
-        this.children.push(new QuadTree(nw, this.capacity));
-
-        let se = new GameObject(x, y + h, new RectangleHB(w, h));
-        this.children.push(new QuadTree(se, this.capacity));
-
-        let sw = new GameObject(x + w, y + h, new RectangleHB(w, h));
-        this.children.push(new QuadTree(sw, this.capacity));
+        //nw
+        this.children.push(new QuadTree(x, y, w, h, this.capacity));
+        //ne
+        this.children.push(new QuadTree(x + w, y, w, h, this.capacity));
+        //sw
+        this.children.push(new QuadTree(x , y + h, w, h, this.capacity));
+        //se
+        this.children.push(new QuadTree(x + w, y + h, w, h, this.capacity));
     
         this.divided = true;
 
         // Reallocate my objects to children.
         for(var i = 0; i <= this.objectIds.length; i++)
         {
-            this.children[0].insert(this.objectIds[i]);
-            this.children[1].insert(this.objectIds[i]);
-            this.children[2].insert(this.objectIds[i]);
-            this.children[3].insert(this.objectIds[i]);
+            var actor = ActorObjects.get(this.objectIds[i]);
+            this.children[0].insert(actor);
+            this.children[1].insert(actor);
+            this.children[2].insert(actor);
+            this.children[3].insert(actor);
         }
 
         this.objectIds = [];
@@ -64,20 +62,35 @@ class Quadtree
 
     insert(object)
     {
-        if(!this.hasCollided(object))
+        if(object == null)
+        {
+            return false;
+        }
+        else if(!this.boundary.hasCollided(object))
         {
             return false;
         }        
-
-        if(this.objectIds.length == this.capacity)
+        else if(this.divided)
         {
+            // Insert into my children.
+            for(let i = 0; i <= 3; i++)
+            {
+                this.children[i].insert(object);
+            }      
+            return true;
+        }
+        else if(this.objectIds.length >= this.capacity)
+        {
+            this.objectIds.push(object.id);
+
             this.subdivide();
             return true;
         }
-
-        this.objectIds.push(object.id);
-
-        return true;
+        else
+        {
+            this.objectIds.push(object.id);
+            return true;
+        }
     }
 
     insertMany(objects)
@@ -97,9 +110,9 @@ class Quadtree
         switch(queryData.type)
         {
             case queryType.id:
-                return queryId(queryData.id, query);
+                return this.queryId(query);
             case queryType.area:
-                return this.queryArea(queryData.area, query);
+                return this.queryArea(query);
             default:
                 throw "No query method for queryData.Type " + queryData.type;
         }
@@ -119,9 +132,9 @@ class Quadtree
         {
             query.foundId = true;
 
-            for(let i = 0; i <= this.objectIds.length; i++)
+            for(let i = 0; i < this.objectIds.length; i++)
             {
-                if(query.qData.id != this.objectIds)
+                if(query.qData.id != this.objectIds[i])
                 {
                     query.objectIds.push(this.objectIds[i]);
                 }
@@ -131,7 +144,7 @@ class Quadtree
 
         for(let i = 0; i <= 3; i++)
         {
-            query = queryChild(this.children[i], query);
+            query = this.queryChild(this.children[i], query);
         }
         return query;
     }
@@ -149,7 +162,7 @@ class Quadtree
         }
         for(let i = 0; i <= 3; i++)
         {
-            query = queryChild(this.children[i], query);
+            query = this.queryChild(this.children[i], query);
         }
         return query;
     }
@@ -157,7 +170,7 @@ class Quadtree
 
     queryChild(child, query)
     {
-        let q = child.query(query.qData);
+        let q = child.query(query, query.qData);
         if(q.collided)
         {
             query.objectIds = query.objectIds.concat(q.objectIds);
@@ -177,6 +190,21 @@ class Quadtree
             this.children = [];
         }
     }
-}
 
-export {queryType, Query, Quadtree};
+    show(context)
+    {        
+        context.beginPath();
+        context.fillStyle = "#000";
+        context.strokeRect(this.boundary.position.x, this.boundary.position.y, this.boundary.hitBox.width, this.boundary.hitBox.height);
+        context.fill();
+        
+
+        if(this.divided)
+        {
+            for(let i = 0; i <= 3; i++)
+            {
+                this.children[i].show(context);
+            }            
+        }
+    }
+}

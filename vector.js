@@ -112,5 +112,3 @@ class Vector
         this._y /= scalar;
     }
 }
-
-export {Vector};

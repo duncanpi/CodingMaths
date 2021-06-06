@@ -1,5 +1,3 @@
-import Vector from "./vector.js";
-
 // Started as the particle class first defined in episode 8
 const _items = [];
 const ActorObjects = 
@@ -68,7 +66,7 @@ const ActorObjects =
             _items[itemIndex] = item;
         }
     }
-}
+};
 
 Object.freeze(ActorObjects);
 
@@ -85,15 +83,15 @@ class GameObject
     
     angleTo(p2)
     {
-        dx = p2.position.x - this.position.x;
-        dy = p2.position.y - this.position.y;
+        var dx = p2.position.x - this.position.x;
+        var dy = p2.position.y - this.position.y;
         return Math.atan2(dy, dx);
     }
 
     distanceTo(p2)
     {
-        dx = p2.position.x - this.position.x;
-        dy = p2.position.y - this.position.y;
+        var dx = p2.position.x - this.position.x;
+        var dy = p2.position.y - this.position.y;
         return Math.sqrt((dx * dx) + (dy * dy));
     }
         
@@ -103,11 +101,11 @@ class GameObject
     {
         // All the collision functions are formatted like shapeShapeCollision, so we're gonna use that to guess the function.
         // If the function cannot be found than collisions for these shapes have been forgotten to be implemented.
-        var fnstring = "Collision." + this.hitBox.shape + gameObject2.hitBox.shape.charAt(0).toUpperCase() + gameObject2.hitBox.shape.slice(1)  + "Collision";
+        var fnstring = this.hitBox.shapeName + gameObject2.hitBox.shapeName.charAt(0).toUpperCase() + gameObject2.hitBox.shapeName.slice(1)  + "Collision";
         var fnparams = [this, gameObject2];
         
         // find object
-        var fn = window[fnstring];
+        var fn = collision[fnstring];
         
         // is object a function?
         if (typeof fn === "function") 
@@ -116,8 +114,9 @@ class GameObject
         }
 
         // See if there's a function for if the shapes are switched in the function name.
-        fnstring = "Collision." + gameObject2.hitBox.shape + this.hitBox.shape.charAt(0).toUpperCase() + this.hitBox.shape.slice(1)  + "Collision";
-        fn = window[fnstring];
+
+        fnstring = gameObject2.hitBox.shapeName + this.hitBox.shapeName.charAt(0).toUpperCase() + this.hitBox.shapeName.slice(1)  + "Collision";
+        fn = collision[fnstring];
         fnparams = [gameObject2, this];
 
         if (typeof fn === "function") 
@@ -136,7 +135,7 @@ class GameObject
             return gameObject2.customCollision(this);
         }
 
-        throw "No collision detection code for the shapes " + this.shape + ", " + gameObject2.shape + "."
+        throw "No collision detection code for the shapes " + this.shapeName + ", " + gameObject2.shapeName + "."
     }
 
     customCollision(gameObject2)
@@ -199,5 +198,3 @@ class Particle extends Actor
         super(x, y, speed, direction, grav, new CircleHB(radius));
     }
 }
-
-export { ActorObjects, GameObject, Actor, Particle };

@@ -1,13 +1,11 @@
-import { queryType } from "./quadtree";
-
-import { Particle, ActorObjects } from "./gameobject.js";
-import QuadTree from "./quadtree.js";
-
 var canvas,
 context,
 width,
 height,
-particles;
+particles,
+quadtree;
+
+
 
 
 // Uses the particle class to demonstrate velocity and acceleration.
@@ -15,6 +13,14 @@ particles;
 // Was made more efficient in episode 12. Now when the particles are moved off screen we stop rendering them
 window.onload = function()
 {
+    document.body.addEventListener("mousedown", (event) => 
+    {
+        for(let i = 0; i < 10; i ++)
+        {
+            particles.push(new Particle(event.x + utils.randomNumber(-5, 5), event.y + utils.randomNumber(-5, 5), 0, 0, 1, 0));
+        }
+    });
+
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
     width = canvas.width = window.innerWidth;
@@ -32,33 +38,34 @@ window.onload = function()
         
         // if we have less than 100 particles, create one and add it to the array
 		// once we have 100, this will be skipped.
-		if(particles.length < 100000) {
-			var p = new Particle(width / 2, height - 20, Math.random() * 8 + 5, -Math.PI / 2 + (Math.random() * .2 - .1), 10, 0.1);
-            p.bounce = -0.9;
-			particles.push(p);
-        }
-        
-        let quadtree = new QuadTree(0, 0, width, height, 10);
+		// if(particles.length < 1000) {
+		// 	var p = new Particle(width / 2, height - 20, Math.random() * 8 + 5, -Math.PI / 2 + (Math.random() * .2 - .1), 10, .1);
+        //     p.bounce = -0.9;
+		// 	particles.push(p);
+        // }
+
+        let quadtree = new QuadTree(0, 0, width, height, 30);
 
         quadtree.insertMany(particles);
+        quadtree.show(context);
         for(var i = particles.length - 1; i >= 0; i -=1)
         {
             var p = particles[i];
 
-            let query = quadtree.query(null, {id: p.id, type: queryType.id});
-            if(query.foundId)
-            {
-                for(let x = 0; x < query.objectIds.length; x++)
-                {
-                    let otherActor = ActorObjects.get(query.objectIds[x]);
-                    if(otherActor.hasCollided(p))
-                    {
-                        p.colour = "#444"
-                    }
-                }
-            }
+            // let query = quadtree.query(null, {id: p.id, type: queryType.id});
+            // if(query.foundId)
+            // {
+            //     for(let x = 0; x < query.objectIds.length; x++)
+            //     {
+            //         let otherActor = ActorObjects.get(query.objectIds[x]);
+            //         if(otherActor.hasCollided(p))
+            //         {
+            //             p.colour = "#444";
+            //         }
+            //     }
+            // }
 
-            p = handleOffscreen();
+            handleOffscreen(p);
 
             p.update();
             context.beginPath();
@@ -67,7 +74,6 @@ window.onload = function()
             context.fillStyle = p.colour;
             context.fill();
         }
-
 
         requestAnimationFrame(update);
     }
