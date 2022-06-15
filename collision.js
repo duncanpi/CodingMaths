@@ -17,8 +17,8 @@ collision =
         let rectx1 = rectangle.position.x + rectangle.hitBox.width,
             recty1 = rectangle.position.y + rectangle.hitBox.height;
         
-        return Utils.inRange(point.position.x, rectangle.position.x, rectx1) &&
-        Utils.inRange(point.position.y, rectangle.position.y, recty1);
+        return utils.inRange(point.position.x, rectangle.position.x, rectx1) &&
+        utils.inRange(point.position.y, rectangle.position.y, recty1);
     },
 
     pointTriangleCollision(point, triangle)

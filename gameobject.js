@@ -50,7 +50,7 @@ const ActorObjects =
 
         for(let i = 0; i < _items.length; i ++)
         {
-            if(_items[i].id == id)
+            if(_items[i].id == item.id)
             {
                 itemIndex = i;
                 break;
@@ -78,7 +78,7 @@ class GameObject
         this.hitBox = hitBox;
         this.id = Math.floor(Math.random() * (99999 - 10000 + 1) + 10000);
         // Is set after the quadtree is created each frame.
-        ActorObjects.add(this);
+
     }
     
     angleTo(p2)
@@ -191,10 +191,18 @@ class Actor extends GameObject
 }
 
 
+class Point extends Actor  
+{    
+    constructor(x, y, speed, direction, grav, colour)
+    {
+        super(x, y, speed, direction, grav, new HitBox(shape.point), colour);
+    }
+}
+
 class Particle extends Actor  
 {    
-    constructor(x, y, speed, direction, radius, grav)
+    constructor(x, y, speed, direction, radius, grav, colour)
     {
-        super(x, y, speed, direction, grav, new CircleHB(radius));
+        super(x, y, speed, direction, grav, new CircleHB(radius), colour);
     }
 }

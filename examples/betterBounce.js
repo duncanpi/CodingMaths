@@ -2,10 +2,11 @@ var canvas,
 context,
 width,
 height,
-particles,
-quadtree;
+particles;
 
 
+var rcPoint = null, 
+oldParticlesLength = 0;
 
 
 // Uses the particle class to demonstrate velocity and acceleration.
@@ -15,20 +16,37 @@ window.onload = function()
 {
     document.body.addEventListener("mousedown", (event) => 
     {
-        for(let i = 0; i < 10; i ++)
+        if(event.button === 0)
         {
-            particles.push(new Particle(event.x + utils.randomNumber(-5, 5), event.y + utils.randomNumber(-5, 5), 0, 0, 1, 0));
+            for(let i = 0; i < 10; i ++)
+            {
+                var p = new Particle(event.x + utils.randomNumber(-5, 5), event.y + utils.randomNumber(-5, 5), 0, 0, 1, 0);
+                ActorObjects.add(p);
+            }
+        }
+        else if(event.button === 1)
+        {
+            rcPoint = new Point(event.x, event.y, 0, 0, 0, "#FF0000");
         }
     });
+
+    // document.body.addEventListener("mouseup", (event) => 
+    // {
+    //     if(event.button === 1)
+    //     {
+    //         rcPoint = null;
+    //     }
+    // });
 
     canvas = document.getElementById("canvas");
     context = canvas.getContext("2d");
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
 
-    particles = [];
--+
+    quadtree = new QuadTree(0, 0, width, height, 30);
+
     update();
+
 
     function update()
     {
@@ -44,13 +62,16 @@ window.onload = function()
 		// 	particles.push(p);
         // }
 
+
         let quadtree = new QuadTree(0, 0, width, height, 30);
 
-        quadtree.insertMany(particles);
-        quadtree.show(context);
-        for(var i = particles.length - 1; i >= 0; i -=1)
+        quadtree.insertMany(_items, rcPoint);
+
+        quadtree.render(context);
+
+        for(var i = _items.length - 1; i >= 0; i -=1)
         {
-            var p = particles[i];
+            var p = _items[i];
 
             // let query = quadtree.query(null, {id: p.id, type: queryType.id});
             // if(query.foundId)
@@ -67,15 +88,25 @@ window.onload = function()
 
             handleOffscreen(p);
 
-            p.update();
+            //p.update();
             context.beginPath();
 
-            context.arc(p.position.x, p.position.y, p.hitBox.radius, 0, Math.PI * 2);
             context.fillStyle = p.colour;
+            context.arc(p.position.x, p.position.y, p.hitBox.radius, 0, Math.PI * 2);
             context.fill();
         }
 
+        if(rcPoint != null)
+        {
+            // TODO: find quadtree and colour boundary + particles.
+            // let query = quadtree.query(null, {id: p.id, type: queryType.area});
+
+            context.fillStyle = rcPoint.colour;
+            context.fillRect(rcPoint.position.x, rcPoint.position.y, 1, 1);
+            context.fill();
+        }
         requestAnimationFrame(update);
+        oldParticlesLength = _items.length;
     }
 
     function handleOffscreen(p)

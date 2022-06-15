@@ -1,3 +1,4 @@
+var test = [];
 const queryType = 
 {
     id: 0,
@@ -16,7 +17,7 @@ class Query
 
 class QuadTree 
 {
-    constructor(x, y, width, height, capacity)
+    constructor(x, y, width, height, capacity, colour)
     {
 
         this.boundary = new GameObject(x, y, new RectangleHB(width, height));
@@ -24,6 +25,7 @@ class QuadTree
         this.objectIds = [];
         this.divided = false;
         this.children = [];
+        this.colour = colour ?? "#000";
     }
 
     subdivide() 
@@ -37,13 +39,13 @@ class QuadTree
         let h = this.boundary.hitBox.height / 2;
     
         //nw
-        this.children.push(new QuadTree(x, y, w, h, this.capacity));
+        this.children.push(new QuadTree(x, y, w, h, this.capacity, this.colour));
         //ne
-        this.children.push(new QuadTree(x + w, y, w, h, this.capacity));
+        this.children.push(new QuadTree(x + w, y, w, h, this.capacity, this.colour));
         //sw
-        this.children.push(new QuadTree(x , y + h, w, h, this.capacity));
+        this.children.push(new QuadTree(x , y + h, w, h, this.capacity, this.colour));
         //se
-        this.children.push(new QuadTree(x + w, y + h, w, h, this.capacity));
+        this.children.push(new QuadTree(x + w, y + h, w, h, this.capacity, this.colour));
     
         this.divided = true;
 
@@ -93,11 +95,11 @@ class QuadTree
         }
     }
 
-    insertMany(objects)
+    insertMany(objects, debugPoint)
     {
         for (let i = 0; i < objects.length; i++)
         {
-            this.insert(objects[i]);
+            this.insert(objects[i], debugPoint);
         }
     }
 
@@ -191,19 +193,18 @@ class QuadTree
         }
     }
 
-    show(context)
-    {        
+    render(context)
+    {     
         context.beginPath();
-        context.fillStyle = "#000";
+        context.strokeStyle  = this.colour;
         context.strokeRect(this.boundary.position.x, this.boundary.position.y, this.boundary.hitBox.width, this.boundary.hitBox.height);
         context.fill();
         
-
         if(this.divided)
         {
             for(let i = 0; i <= 3; i++)
             {
-                this.children[i].show(context);
+                this.children[i].render(context);
             }            
         }
     }
